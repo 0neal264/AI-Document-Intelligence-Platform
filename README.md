@@ -22,9 +22,19 @@ python -m pip install -e '.[dev]'
 streamlit run app.py
 ```
 
-The default mode is `demo`. To change the displayed model setting, set
-`DOCUMIND_MODEL` in the environment. `OPENAI_API_KEY` is not used in this
-milestone. Live mode will be implemented later.
+The app starts in `demo` mode and needs no OpenAI API key. The mock provider
+does not send document text to a service. Local development settings can go in
+a root `.env` file, which is ignored by Git:
+
+```dotenv
+DOCUMIND_MODE=demo
+DOCUMIND_MODEL=gpt-4o-mini
+```
+
+Values already set in the hosting environment take precedence over `.env`.
+`DOCUMIND_MODEL` only changes the displayed model setting in this milestone.
+Live extraction is not implemented; selecting `DOCUMIND_MODE=live` displays a
+notice and still makes no OpenAI request.
 
 ## Development checks
 
@@ -32,6 +42,19 @@ milestone. Live mode will be implemented later.
 pytest
 ruff check .
 ```
+
+## Run with Docker
+
+Build and start the demo from the repository root:
+
+```bash
+docker build -t documind .
+docker run --rm -p 8501:8501 documind
+```
+
+Open <http://localhost:8501>. To pass configuration from the host, add
+`-e DOCUMIND_MODE=demo` (or other supported settings) to `docker run`. Do not
+copy a secrets file into the image.
 
 ## Planned profiles
 
